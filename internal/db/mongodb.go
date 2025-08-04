@@ -14,8 +14,9 @@ import (
 var mongoDBClient *mongo.Client
 var databaseInstance *mongo.Database
 var once sync.Once
+var defaultCollection *mongo.Collection
 
-func ConnectDB() (*mongo.Client, *mongo.Database) {
+func ConnectDB() (*mongo.Client, *mongo.Database, *mongo.Collection) {
 	once.Do(func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
@@ -47,8 +48,11 @@ func ConnectDB() (*mongo.Client, *mongo.Database) {
 		mongoDBClient = client
 		databaseInstance = dbInstance
 
+		collectionName := os.Getenv("COLLECTION_NAME")
+		defaultCollection = dbInstance.Collection(collectionName)
+
 	})
 
-	return mongoDBClient, databaseInstance
+	return mongoDBClient, databaseInstance, defaultCollection
 
 }

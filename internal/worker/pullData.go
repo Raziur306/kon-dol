@@ -36,7 +36,7 @@ func PullNewsList() {
 	// Sequentially process each item
 	for i, item := range newsList.Items {
 
-		newsResponse, err := fetcher.FetchSingleNewsFullContext(item.Slug)
+		newsResponse, err, lastUpdatedAt := fetcher.FetchSingleNewsFullContext(item.Slug)
 		if err != nil {
 			log.Printf("Error fetching full context for item %d: %v", i, err)
 			continue
@@ -48,9 +48,15 @@ func PullNewsList() {
 			continue
 		}
 
+		//check if the item is violated or not
+		if utils.IsPotentialPoliticalViolence(mainContext, item.Tags) {
+			log.Printf("Item %d is not violated, skipping...", i)
+			continue
+		}
+
 		// Process with GPT
 		fmt.Printf("Processing item %d with GPT...\n", i)
-		gpt.ProcessWithGPT(item.URL, mainContext)
+		gpt.ProcessWithGPT(item.URL, mainContext, lastUpdatedAt, item.TrackId)
 
 	}
 

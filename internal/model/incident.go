@@ -8,7 +8,7 @@ type Incident struct {
 	UpdatedAt primitive.DateTime `bson:"updated_at" json:"updated_at"`
 	Title     string             `bson:"title" json:"title"`
 	Location  string             `bson:"location" json:"location"`
-	Party     Party              `bson:"party" json:"party"`
+	Party     string             `bson:"party" json:"party"`
 	Date      string             `bson:"date" json:"date"`
 	Source    string             `bson:"source" json:"source"`
 	ShortDesc string             `bson:"short_desc" json:"short_desc"`

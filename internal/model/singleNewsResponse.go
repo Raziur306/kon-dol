@@ -15,6 +15,7 @@ type ArticleData struct {
 
 type Story struct {
 	ID               string        `json:"id"`
+	LastUpdatedAt    int64         `json:"last-published-at"`
 	Headline         string        `json:"headline"`
 	Subheadline      string        `json:"subheadline"`
 	Slug             string        `json:"slug"`

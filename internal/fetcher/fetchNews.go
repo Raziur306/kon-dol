@@ -37,25 +37,25 @@ func PullNewsList(uri string) (model.NewsResponse, error) {
 
 }
 
-func FetchSingleNewsFullContext(uri string) (model.SingleNewsResponse, error) {
+func FetchSingleNewsFullContext(uri string) (model.SingleNewsResponse, error, int64) {
 	baseUrl := os.Getenv("SINGLE_NEWS_API")
 
 	if baseUrl == "" {
 		log.Fatal("SINGLE_NEWS_API environment variable is not set")
-		return model.SingleNewsResponse{}, fmt.Errorf("SINGLE_NEWS_API environment variable is not set")
+		return model.SingleNewsResponse{}, fmt.Errorf("SINGLE_NEWS_API environment variable is not set"), 0
 	}
 
 	resp, err := http.Get(baseUrl + uri)
 	if err != nil {
 		log.Fatal("Error fetching news full context:", err)
-		return model.SingleNewsResponse{}, err
+		return model.SingleNewsResponse{}, err, 0
 	}
 	defer resp.Body.Close()
 
 	var newsResp model.SingleNewsResponse
 	if err := json.NewDecoder(resp.Body).Decode(&newsResp); err != nil {
 		log.Fatal("Error decoding JSON:", err)
-		return model.SingleNewsResponse{}, err
+		return model.SingleNewsResponse{}, err, 0
 	}
-	return newsResp, nil
+	return newsResp, nil, newsResp.Data.Story.LastUpdatedAt
 }
